@@ -14,7 +14,8 @@ FrameWork::FrameWork() :
 	m_Paused(false),
 	mMinimized(false),
 	mMaximized(false),
-	mResizing(false)
+	mResizing(false),
+	m_hWnd(NULL)
 {
 	gpDispatch = this;
 }

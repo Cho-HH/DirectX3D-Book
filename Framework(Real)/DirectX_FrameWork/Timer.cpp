@@ -8,6 +8,7 @@ Timer::Timer() : mdSecondsPerCount(0.0),
 						mllPausedTime(0), 
 						mllPrevTime(0), 
 						mllCurrTime(0), 
+						mllStopTime(0),
 						mbStopped(false)
 {
 	long long countsPerSec;
