@@ -91,8 +91,3 @@ void Timer::Update()
 		mdDeltaTime = 0.0;
 	}
 }
-
-void Timer::SetScale(float scale)
-{
-	mfScale = scale;
-}

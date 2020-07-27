@@ -9,8 +9,8 @@ LRESULT CALLBACK g_WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 }
 
 FrameWork::FrameWork() :
-	mScreenHeight(DEFAULT_SCREEN_HEIGHT),
-	mScreenWidth(DEFAULT_SCREEN_WIDTH),
+	mScreenHeight(g_SCreenHeight),
+	mScreenWidth(g_ScreenWidth),
 	m_Paused(false),
 	mMinimized(false),
 	mMaximized(false),

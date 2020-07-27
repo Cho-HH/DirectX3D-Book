@@ -11,7 +11,7 @@ public:
 	void		Resume();
 	void		Stop();
 	void		Update();
-	void		SetScale(float scale);
+	inline void		SetScale(float scale);
 
 private:
 	double		mdSecondsPerCount;
@@ -26,3 +26,9 @@ private:
 
 	bool		mbStopped;
 };
+
+void Timer::SetScale(float scale)
+{
+	mfScale = scale;
+}
+

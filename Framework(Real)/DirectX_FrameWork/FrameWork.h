@@ -5,14 +5,14 @@ using namespace std;
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-#define DEFAULT_SCREEN_WIDTH	960
-#define DEFAULT_SCREEN_HEIGHT	600
+const int g_ScreenWidth = 960;
+const int g_SCreenHeight = 600;
 
 class FrameWork
 {
 public:
 	FrameWork();
-	~FrameWork();
+	virtual ~FrameWork();
 
 protected:
 	ComPtr<IDXGISwapChain>  m_spSwapchain;
