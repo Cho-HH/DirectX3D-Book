@@ -1,8 +1,10 @@
 #pragma once
+
 class Timer
 {
 public:
 	Timer();
+	~Timer() = default;
 
 public:
 	float		TotalTime() const;

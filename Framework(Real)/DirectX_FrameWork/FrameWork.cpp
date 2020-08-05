@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <sstream>
+#include "FrameWork.h"
 
 FrameWork* gpDispatch = 0;
 
@@ -9,8 +9,8 @@ LRESULT CALLBACK g_WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 }
 
 FrameWork::FrameWork() :
-	mScreenHeight(g_SCreenHeight),
-	mScreenWidth(g_ScreenWidth),
+	mScreenHeight(SCREENHEIGHT),
+	mScreenWidth(SCREENWIDTH),
 	m_Paused(false),
 	mMinimized(false),
 	mMaximized(false),
@@ -18,10 +18,6 @@ FrameWork::FrameWork() :
 	m_hWnd(NULL)
 {
 	gpDispatch = this;
-}
-
-FrameWork::~FrameWork()
-{
 }
 
 void FrameWork::InitWindow(HINSTANCE hInstance)
@@ -67,7 +63,7 @@ void FrameWork::CalcFPS()
 	static float timeElaped = 0.0f;
 
 	frameCnt++;
-
+	
 	if ((m_Timer.TotalTime() - timeElaped) >= 1.0f)
 	{
 		float fps = (float)frameCnt;

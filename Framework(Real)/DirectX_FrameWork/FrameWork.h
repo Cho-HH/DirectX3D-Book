@@ -5,14 +5,11 @@ using namespace std;
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-const int g_ScreenWidth = 960;
-const int g_SCreenHeight = 600;
-
 class FrameWork
 {
 public:
 	FrameWork();
-	virtual ~FrameWork();
+	virtual ~FrameWork() = default;
 
 protected:
 	ComPtr<IDXGISwapChain>  m_spSwapchain;
@@ -27,6 +24,8 @@ protected:
 
 	unique_ptr<Mouse> m_spMouse;
 	Mouse::ButtonStateTracker m_MouseTracker;
+
+	enum { SCREENWIDTH = 960 , SCREENHEIGHT = 600 };
 
 	UINT mScreenWidth;
 	UINT mScreenHeight;
