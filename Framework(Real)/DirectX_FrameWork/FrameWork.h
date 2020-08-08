@@ -8,7 +8,7 @@ using namespace DirectX;
 class FrameWork
 {
 public:
-	FrameWork();
+	FrameWork(HINSTANCE hInstance);
 	virtual ~FrameWork() = default;
 
 protected:
@@ -19,38 +19,65 @@ protected:
 	ComPtr<ID3D11Texture2D> m_spDepthStencilBuffer;
 	ComPtr<ID3D11DepthStencilView> m_spDepthStencilView;
 
-	unique_ptr<Keyboard> m_spKeyboard;
-	Keyboard::KeyboardStateTracker m_KeyboardTracker;
+	D3D11_VIEWPORT m_ScreenViewport;
 
-	unique_ptr<Mouse> m_spMouse;
-	Mouse::ButtonStateTracker m_MouseTracker;
+	HINSTANCE m_hAppInst;
+	HWND m_hWnd;
+	bool m_Paused;
 
 	enum { SCREENWIDTH = 960 , SCREENHEIGHT = 600 };
 
-	UINT mScreenWidth;
-	UINT mScreenHeight;
+	UINT m_ScreenWidth;
+	UINT m_ScreenHeight;
 
-	bool mMinimized;
-	bool mMaximized;
-	bool mResizing;
+	bool m_Minimized;
+	bool m_Maximized;
+	bool m_Resizing;
+	UINT m_4xMsaaQuality;
 
-	bool m_Paused;
-	HWND m_hWnd;	
 	Timer m_Timer;
 
-protected:
-	void CalcFPS();
+	wstring m_MainWndCaption;
+	D3D_DRIVER_TYPE m_d3dDriverType;
+	bool m_Enable4xMsaa;
 
 public:
-	virtual void InitD3D(HWND hWnd);
+	virtual bool Init();
 	virtual void ClearD3D();
 	//virtual void Update(float dt) = 0;
 	virtual void RenderFrame();
 	virtual void OnResize();
-
-public:
-	void InitWindow(HINSTANCE hInstance);
 	virtual LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	inline HINSTANCE getInst() const;
+	inline HWND getMainWnd() const;
+	inline float AspectRatio() const;
+
 	int GameLoop();
+
+	virtual void OnMouseDown(WPARAM btnState, int x, int y) {}
+	virtual void OnMouseUp(WPARAM btnState, int x, int y) {}
+	virtual void OnMouseMove(WPARAM btnState, int x, int y) {}
+
+protected:
+	void CalcFPS();
+	bool InitD3D();
+	bool InitWindow();
 };
+
+HINSTANCE FrameWork::getInst() const
+{
+	return m_hAppInst;
+}
+ 
+HWND FrameWork::getMainWnd() const
+{
+	return m_hWnd;
+}
+
+float FrameWork::AspectRatio() const
+{
+	return static_cast<float>(m_ScreenWidth) / m_ScreenHeight;
+}
+
 
