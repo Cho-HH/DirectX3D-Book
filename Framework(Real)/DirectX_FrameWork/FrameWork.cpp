@@ -60,13 +60,13 @@ bool FrameWork::InitWindow()
 
 	RECT wr = { 0,0,static_cast<LONG>(m_ScreenWidth),static_cast<LONG>(m_ScreenHeight)};
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
-
+	
 	m_hWnd = CreateWindowW(
 		L"FrameWorkClass",
 		m_MainWndCaption.c_str(),
 		WS_OVERLAPPEDWINDOW,
-		300,
-		100,
+		(GetSystemMetrics(SM_CXSCREEN)- m_ScreenWidth)/2,
+		(GetSystemMetrics(SM_CYSCREEN) - m_ScreenHeight) / 2,
 		wr.right - wr.left,
 		wr.bottom - wr.top,
 		NULL,
@@ -371,6 +371,8 @@ void FrameWork::OnResize()
 	viewport.TopLeftY = 0;
 	viewport.Width = static_cast<float>(m_ScreenWidth);
 	viewport.Height = static_cast<float>(m_ScreenHeight);
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
 
 	m_spDeviceCon->RSSetViewports(1, &viewport);
 }

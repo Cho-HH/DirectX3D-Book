@@ -8,7 +8,6 @@
 #include <tchar.h>
 #include <wrl.h>
 
-#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
