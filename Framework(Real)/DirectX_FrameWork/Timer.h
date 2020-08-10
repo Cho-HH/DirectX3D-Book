@@ -20,11 +20,11 @@ private:
 	double		mdDeltaTime;
 	float		mfScale;
 
-	long long	mllBaseTime;
-	long long	mllPausedTime;
-	long long	mllStopTime;
-	long long	mllPrevTime;
-	long long	mllCurrTime;
+	__int64	mllBaseTime;
+	__int64 mllPausedTime;
+	__int64 mllStopTime;
+	__int64 mllPrevTime;
+	__int64 mllCurrTime;
 
 	bool		mbStopped;
 };

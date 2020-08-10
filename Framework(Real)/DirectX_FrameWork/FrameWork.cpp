@@ -94,45 +94,33 @@ bool FrameWork::InitD3D()
 #endif
 
 	D3D_FEATURE_LEVEL featureLevel;
-	HRESULT hr = D3D11CreateDevice(
-		0,                
-		m_d3dDriverType,
-		0,             
-		createDeviceFlags,
-		0, 0,           
-		D3D11_SDK_VERSION,
-		m_spDevice.GetAddressOf(),
-		&featureLevel,
-		m_spDeviceCon.GetAddressOf());
-
-	if (FAILED(hr))
-	{
-		MessageBoxW(0, L"D3D11CreateDevice Failed.", 0, 0);
-		return false;
-	}
-
-	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
-	{
-		MessageBoxW(0, L"Direct3D Feature Level 11 unsupported.", 0, 0);
-		return false;
-	}
-
-	hr = m_spDevice->CheckMultisampleQualityLevels(
-		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m_4xMsaaQuality);
-	assert(m_4xMsaaQuality > 0);
-
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-	scd.BufferCount = 1;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.BufferDesc.Width = m_ScreenWidth;
 	scd.BufferDesc.Height = m_ScreenHeight;
+	scd.BufferDesc.RefreshRate.Numerator = 60;
+	scd.BufferDesc.RefreshRate.Denominator = 1;
+	scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	if (m_Enable4xMsaa)
+	{
+		scd.SampleDesc.Count = 4;
+		scd.SampleDesc.Quality = m_4xMsaaQuality - 1;
+	}
+	else
+	{
+		scd.SampleDesc.Count = 1;
+		scd.SampleDesc.Quality = 0;
+	}
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	scd.OutputWindow = m_hWnd;
-	scd.SampleDesc.Count = 4;
-	scd.Windowed = TRUE;
+	scd.BufferCount = 1;
+	scd.Windowed = true;  //전체화면:false
+	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	hr = D3D11CreateDeviceAndSwapChain(NULL,
+
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
 		m_d3dDriverType,
 		NULL,
 		createDeviceFlags,
@@ -144,52 +132,21 @@ bool FrameWork::InitD3D()
 		&featureLevel,
 		m_spDeviceCon.GetAddressOf());
 
-	if (FAILED(hr))
-	{
-		MessageBoxW(0, L"D3D11CreateDevice or SwaoChain Failed.", 0, 0);
-		return false;
-	}
-
 	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
 	{
 		MessageBoxW(0, L"Direct3D Feature Level 11 unsupported.", 0, 0);
 		return false;
 	}
 
-	if (m_Enable4xMsaa)
-	{
-		scd.SampleDesc.Count = 4;
-		scd.SampleDesc.Quality = m_4xMsaaQuality - 1;
-	}
-	else
-	{
-		scd.SampleDesc.Count = 1;
-		scd.SampleDesc.Quality = 0;
-	}
-
-	ComPtr<IDXGIDevice> dxgiDevice = NULL;
-	hr = m_spDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)dxgiDevice.GetAddressOf());
 	if (FAILED(hr))
 	{
-		MessageBoxW(NULL, L"IDXGIDevice Faild.", 0, MB_OK);
+		MessageBoxW(0, L"D3D11CreateDevice or SwaoChain Failed.", 0, 0);
 		return false;
 	}
 
-	ComPtr<IDXGIAdapter> dxgiAdapter = 0;
-	hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)dxgiAdapter.GetAddressOf());
-	if (FAILED(hr))
-	{
-		MessageBoxW(NULL, L"IDXGIAdapter Failed.", 0, MB_OK);
-		return false;
-	}
-
-	ComPtr<IDXGIFactory> dxgiFactory = 0;
-	hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)dxgiFactory.GetAddressOf());
-	if (FAILED(hr))
-	{
-		MessageBoxW(NULL, L"IDXGIFactory Failed.", 0, MB_OK);
-		return false;
-	}
+	hr = m_spDevice->CheckMultisampleQualityLevels(
+		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m_4xMsaaQuality);
+	assert(m_4xMsaaQuality > 0);
 
 	OnResize();
 
@@ -334,7 +291,7 @@ void FrameWork::OnResize()
 	m_spSwapchain->ResizeBuffers(1, m_ScreenWidth, m_ScreenHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
 	ComPtr<ID3D11Texture2D> pBackBuffer;
-	m_spSwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)pBackBuffer.GetAddressOf()); //후면버퍼를 얻어온다.
+	m_spSwapchain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), (void**)pBackBuffer.GetAddressOf()); //후면버퍼를 얻어온다.
 
 	m_spDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL, m_spTargetView.ReleaseAndGetAddressOf()); //후면버퍼를 이용해 리소스 뷰를 만든다.
 
@@ -348,8 +305,9 @@ void FrameWork::OnResize()
 	dsd.SampleDesc.Count = 4;
 	dsd.Usage = D3D11_USAGE_DEFAULT;
 	dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-
-	if (m_Enable4xMsaa)
+	dsd.CPUAccessFlags = 0;
+	dsd.MiscFlags = 0;
+	if (m_Enable4xMsaa)//Swapchain의 것과 동일
 	{
 		dsd.SampleDesc.Count = 4;
 		dsd.SampleDesc.Quality = m_4xMsaaQuality - 1;
@@ -362,6 +320,8 @@ void FrameWork::OnResize()
 
 	m_spDevice->CreateTexture2D(&dsd, 0, m_spDepthStencilBuffer.ReleaseAndGetAddressOf());
 	m_spDevice->CreateDepthStencilView(m_spDepthStencilBuffer.Get(), 0, m_spDepthStencilView.ReleaseAndGetAddressOf());
+
+	//출력병합기단계에 묶기
 	m_spDeviceCon->OMSetRenderTargets(1, m_spTargetView.GetAddressOf(), m_spDepthStencilView.Get());
 
 	D3D11_VIEWPORT viewport;
@@ -373,7 +333,7 @@ void FrameWork::OnResize()
 	viewport.Height = static_cast<float>(m_ScreenHeight);
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
-
+	
 	m_spDeviceCon->RSSetViewports(1, &viewport);
 }
 

@@ -11,7 +11,7 @@ Timer::Timer() : mdSecondsPerCount(0.0),
 						mllStopTime(0),
 						mbStopped(false)
 {
-	long long countsPerSec;
+	__int64 countsPerSec;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
 	mdSecondsPerCount = 1.0 / (double)countsPerSec;
 }
@@ -34,7 +34,7 @@ float Timer::DeltaTime() const
 
 void Timer::Start()
 {
-	long long currTime;
+	__int64 currTime;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 
 	mllBaseTime = currTime;
@@ -45,7 +45,7 @@ void Timer::Start()
 
 void Timer::Resume()
 {
-	long long startTime;
+	__int64 startTime;
 	QueryPerformanceCounter((LARGE_INTEGER*)&startTime);
 
 	if (mbStopped)
@@ -62,7 +62,7 @@ void Timer::Stop()
 {
 	if (!mbStopped)
 	{
-		long long currTime;
+		__int64 currTime;
 		QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 
 		mllStopTime = currTime;
