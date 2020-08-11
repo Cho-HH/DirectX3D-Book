@@ -25,7 +25,7 @@ protected:
 	HWND m_hWnd;
 	bool m_Paused;
 
-	enum { SCREENWIDTH = 1280 , SCREENHEIGHT = 700 };
+	enum { SCREENWIDTH = 1280 , SCREENHEIGHT = 800 };
 
 	UINT m_ScreenWidth;
 	UINT m_ScreenHeight;
