@@ -208,10 +208,10 @@ void BoxApp::BuildFX()
 	HRESULT hr = D3DCompileFromFile(L"FX/color.fx", 0, 0, 0, "fx_5_0", shaderFlags, 0, compiledShader.GetAddressOf(), compilationMsgs.GetAddressOf());
 
 	// compilationMsgs can store errors or warnings.
-	if (compilationMsgs != 0)
+	/*if (compilationMsgs != 0)
 	{
 		MessageBoxA(0, (char*)compilationMsgs->GetBufferPointer(), 0, 0);
-	}
+	}*/
 
 	if (FAILED(hr))
 	{
