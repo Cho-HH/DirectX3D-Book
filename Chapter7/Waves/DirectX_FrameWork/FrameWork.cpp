@@ -329,8 +329,8 @@ void FrameWork::OnResize()
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = 300.0f;//static_cast<float>(m_ScreenWidth);
-	viewport.Height = 300.0f;// static_cast<float>(m_ScreenHeight);
+	viewport.Width = static_cast<float>(m_ScreenWidth);
+	viewport.Height = static_cast<float>(m_ScreenHeight);
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 	
